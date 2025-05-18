@@ -1,6 +1,7 @@
 require('dotenv').config();
 const {
-    curatedlist: curatedListModel
+    curatedlist: curatedListModel,
+    watchlist: watchListModel
 } = require("../models");
 const { createSlug } = require('../services/index.js');
 
@@ -31,5 +32,15 @@ const updateCuratedList = async (req, res) => {
     }
     catch (error) { console.error(error) }
 }
-module.exports = { createCuratedList, updateCuratedList };
+
+const createWatchList = async (req, res) => {
+
+    try {
+        const { movieId } = req.body;
+        await watchListModel.create({ movieId });
+        res.status(201).json({ message: 'Movie added to watchlist successfully.' });
+    }
+    catch (error) { console.error(error) }
+}
+module.exports = { createCuratedList, updateCuratedList, createWatchList };
 

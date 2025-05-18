@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const { searchMovie } = require('./services/index.js');
-const { createCuratedList, updateCuratedList } = require('./controllers/movieDataController.js');
+const { createCuratedList, updateCuratedList, createWatchList } = require('./controllers/movieDataController.js');
 
 const app = express();
 const cors = require('cors');
@@ -17,6 +17,8 @@ app.get('/', (req, res) => {
 app.get('/api/movies/search', searchMovie);
 app.post('/api/curated-lists', createCuratedList);
 app.put('/api/curated-lists/:curatedListId', updateCuratedList);
+
+app.post('/api/movies/watchlist', createWatchList);
 
 const PORT = 3000;
 app.listen(PORT, () => {
