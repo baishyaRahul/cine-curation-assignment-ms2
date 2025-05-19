@@ -31,16 +31,17 @@ const searchMovie = async (req, res) => {
 
         let results = response.data.results;
 
-        const enrichedMovies = await Promise.all(
+        const formattedResult = await Promise.all(
             results.map(async (movie) => {
                 const actors = await getActors(movie.id);
                 const genre = await getGenre(movie.id);
 
                 return {
+                    id: movie.id,
                     title: movie.title,
                     tmdbId: movie.id,
-                    genre: genre,
-                    actors: actors,
+                    genre: JSON.stringify(genre),
+                    actors: JSON.stringify(actors),
                     releaseYear: movie.release_date ? movie.release_date.split('-')[0] : null,
                     rating: movie.vote_average,
                     description: movie.overview,
@@ -48,17 +49,17 @@ const searchMovie = async (req, res) => {
             })
         );
 
-        // const allTmdbIds = formattedResult.map(movie => movie.tmdbId);
-        // const checkMovieData = await movieExistsInDB(allTmdbIds);
+        const allTmdbIds = formattedResult.map(movie => movie.tmdbId);
+        const checkMovieData = await movieExistsInDB(allTmdbIds);
 
-        // if (Object.keys(checkMovieData).length === 0) {
-        //     await movieModel.bulkCreate(formattedResult);
-        //     console.log({ message: 'Movie saved successfully' });
-        // } else {
-        //     console.log({ message: 'Movie present in Database' });
-        // }
+        if (Object.keys(checkMovieData).length === 0) {
+            await movieModel.bulkCreate(formattedResult);
+            console.log({ message: 'Movie saved successfully' });
+        } else {
+            console.log({ message: 'Movie present in Database' });
+        }
 
-        res.json(enrichedMovies);
+        res.json(formattedResult);
     }
     catch (error) {
         if (error.code === 'ECONNRESET') {

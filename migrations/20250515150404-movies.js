@@ -10,7 +10,7 @@ module.exports = {
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
     await queryInterface.createTable('movies', {
-      id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
+      id: { type: Sequelize.INTEGER, autoIncrement: false, primaryKey: true },
       title: { type: Sequelize.STRING, allowNull: false },
       tmdbId: { type: Sequelize.INTEGER, allowNull: false },
       genre: { type: Sequelize.TEXT },
