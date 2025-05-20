@@ -102,6 +102,60 @@ const getMovieByGenreActor = async (req, res) => {
     catch (error) { console.error(error) }
 }
 
+const getMovieByRatingYear = async (req, res) => {
+
+    try {
+        const allowedSortFields = ['rating', 'releaseYear'];
+        const allowedOrder = ['ASC', 'DESC'];
+
+        const list = req.query.list;
+        const sortBy = req.query.sortBy;
+        const order = req.query.order;
+
+        const sortField = allowedSortFields.includes(sortBy) ? sortBy : 'rating';
+        const sortOrder = allowedOrder.includes(order) ? order : 'DESC';
+
+        if (list === 'watchlist') {
+
+            const movies = await watchListModel.findAll({
+                include: {
+                    model: movieModel,
+                    attributes: ['title', 'tmdbId', 'genre', 'actors', 'releaseYear', 'rating'],
+                },
+                order: [[{ model: movieModel }, sortField, sortOrder]],
+            });
+
+            const result = movies.map((item) => item.movie)
+            res.status(201).json({ movies: result });
+        } else if (list === 'wishlist') {
+
+            const movies = await wishlistModel.findAll({
+                include: {
+                    model: movieModel,
+                    attributes: ['title', 'tmdbId', 'genre', 'actors', 'releaseYear', 'rating'],
+                },
+                order: [[{ model: movieModel }, sortField, sortOrder]],
+            });
+
+            const result = movies.map((item) => item.movie)
+            res.status(201).json({ movies: result });
+        } else if (list === 'curatedlist') {
+
+            const movies = await curatedListModel.findAll({
+                include: {
+                    model: movieModel,
+                    attributes: ['title', 'tmdbId', 'genre', 'actors', 'releaseYear', 'rating'],
+                },
+                order: [[{ model: movieModel }, sortField, sortOrder]],
+            });
+
+            const result = movies.map((item) => item.movie)
+            res.status(201).json({ movies: result });
+        }
+    }
+    catch (error) { console.error(error) }
+}
+
 const getTopFiveMovie = async (req, res) => {
 
     try {
@@ -132,5 +186,6 @@ module.exports = {
     creatCuratedListItem,
     createReview,
     getMovieByGenreActor,
-    getTopFiveMovie
+    getTopFiveMovie,
+    getMovieByRatingYear
 };

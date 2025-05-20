@@ -9,7 +9,8 @@ const { createCuratedList,
     creatCuratedListItem,
     createReview,
     getMovieByGenreActor,
-    getTopFiveMovie } = require('./controllers/movieDataController.js');
+    getTopFiveMovie,
+    getMovieByRatingYear } = require('./controllers/movieDataController.js');
 
 const app = express();
 const cors = require('cors');
@@ -35,6 +36,9 @@ app.post('/api/movies/:movieId/reviews', createReview);
 app.get('/api/movies/searchByGenreAndActor', getMovieByGenreActor);
 
 app.get('/api/movies/top5', getTopFiveMovie);
+
+app.get('/api/movies/sort', getMovieByRatingYear);
+
 
 const PORT = 3000;
 app.listen(PORT, () => {
